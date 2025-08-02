@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Doc Designer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">💼 AI Doc Designer</div>
+    <nav>
+      <button class="nav-btn active" id="resumeBtn">Resume Builder</button>
+      <button class="nav-btn" id="coverBtn">Cover Letter</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Resume Tab -->
+    <section id="resumeTab" class="tab active">
+      <h1>AI Resume Builder</h1>
+      <p>Create professional resumes with AI assistance</p>
+
+      <div class="ai-box">
+        <h2>✨ AI Enhancement</h2>
+        <p>Use AI to enhance your resume content and make it more professional</p>
+      </div>
+
+      <div class="form-layout">
+        <form id="resumeForm">
+          <h3>👤 Personal Details</h3>
+          <input type="text" name="name" placeholder="Full Name" required />
+          <input type="email" name="email" placeholder="Email" required />
+          <input type="text" name="phone" placeholder="Phone" />
+          <input type="text" name="location" placeholder="Location / Address" />
+          <input type="text" name="dob" placeholder="Date of Birth (optional)" />
+
+          <h3>🧑‍🎓 Educational Background</h3>
+          <textarea name="education" placeholder="Enter your education details..."></textarea>
+
+          <h3>🎓 Qualification</h3>
+          <textarea name="qualification" placeholder="List your qualifications..."></textarea>
+
+          <h3>🛠️ Skills</h3>
+          <textarea name="skills" placeholder="List your key skills (comma separated)..."></textarea>
+
+          <h3>✨ Hobbies</h3>
+          <textarea name="hobbies" placeholder="List your hobbies or interests..."></textarea>
+
+          <h3>💬 Professional Summary</h3>
+          <textarea name="summary" placeholder="Write your professional summary here..."></textarea>
+
+          <button class="blue-btn" id="generateResumeBtn">Generate AI Resume</button>
+        </form>
+
+        <div class="preview-box">
+          <h3>Resume Preview</h3>
+          <div class="preview-content" id="resumePreview">Your Name</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cover Letter Tab -->
+    <section id="coverTab" class="tab">
+      <h1>AI Cover Letter Generator</h1>
+      <p>Create personalized cover letters that stand out</p>
+
+      <div class="container">
+        <form id="coverForm">
+          <input name="name" type="text" placeholder="Your Full Name" required />
+          <input name="email" type="email" placeholder="Your Email" required />
+          <input name="company" type="text" placeholder="Company Name" />
+          <input name="position" type="text" placeholder="Position Title" />
+          <input name="manager" type="text" placeholder="Hiring Manager (Optional)" />
+          <textarea name="description" rows="4" placeholder="Paste the job description or key requirements here..."></textarea>
+          
+          <div class="date-section">
+            <input name="date" type="text" id="date" placeholder="Click 'Set Today'" />
+            <button type="button" onclick="setToday()">Set Today</button>
+          </div>
+
+          <button type="submit" id="generateCoverBtn">Generate Cover Letter</button>
+        </form>
+
+        <div id="coverPreview" class="resume-box"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js">
+    
+  </script>
+</body>
+</html>
