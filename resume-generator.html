@@ -453,7 +453,7 @@
                 generateBtn.disabled = true;
                
                 // Call the backend API
-                const response = await fetch('https://ai-resume-and-cover-letter-generator.onrender.com', {
+                const response = await fetch('http://localhost:5000/generate-resume', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -592,3 +592,4 @@
 </body>
 
 </html>
+
