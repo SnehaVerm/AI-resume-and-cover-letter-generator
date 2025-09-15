@@ -652,7 +652,7 @@
     </button>
 
     <script>
-        // DOM Elements
+       // DOM Elements
         const generateBtn = document.getElementById('generateBtn');
         const clearBtn = document.getElementById('clearBtn');
         const coverLetterPreview = document.getElementById('coverLetterPreview');
@@ -718,97 +718,44 @@
                 interest
             };
 
-            // For demo purposes, use a mock API response if the real API fails
-            const useMockAPI = true; // Set to false to try the real API first
-            
-            if (useMockAPI) {
-                // Use a mock response for demonstration
-                setTimeout(() => {
-                    aiProcessing.style.display = 'none';
-                    const mockCoverLetter = generateMockCoverLetter(requestData);
-                    displayCoverLetter(mockCoverLetter, fullName);
-                    showToast('Demo cover letter generated successfully!');
-                    generateBtn.disabled = false;
-                    generateBtn.innerHTML = '<i class="fas fa-robot"></i> Generate Cover Letter';
-                }, 2000);
-            } else {
-                // Make API call to generate cover letter
-                fetch('/generate-cover-letter', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestData)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Hide processing animation
-                    aiProcessing.style.display = 'none';
-                    
-                    if (data.error) {
-                        showToast('Error: ' + data.error, true);
-                        return;
-                    }
-                    
-                    // Display the cover letter
-                    displayCoverLetter(data.coverLetter, fullName);
-                    showToast('Cover letter generated successfully!');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    aiProcessing.style.display = 'none';
-                    
-                    // Fallback to mock API if real API fails
-                    showToast('API not available. Using demo mode.', true);
-                    setTimeout(() => {
-                        const mockCoverLetter = generateMockCoverLetter(requestData);
-                        displayCoverLetter(mockCoverLetter, fullName);
-                        showToast('Demo cover letter generated!');
-                    }, 1000);
-                })
-                .finally(() => {
-                    // Re-enable generate button
-                    generateBtn.disabled = false;
-                    generateBtn.innerHTML = '<i class="fas fa-robot"></i> Generate Cover Letter';
-                });
-            }
-        });
-
-        // Generate a mock cover letter for demonstration
-        function generateMockCoverLetter(data) {
-            const today = new Date().toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+            // Make API call to generate cover letter
+            fetch('http://127.0.0.1:5000/generate-cover-letter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Hide processing animation
+                aiProcessing.style.display = 'none';
+                
+                if (data.error) {
+                    showToast('Error: ' + data.error, true);
+                    return;
+                }
+                
+                // Display the cover letter
+                displayCoverLetter(data.coverLetter, fullName);
+                showToast('Cover letter generated successfully!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                aiProcessing.style.display = 'none';
+                showToast('Failed to generate cover letter. Please try again.', true);
+            })
+            .finally(() => {
+                // Re-enable generate button
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-robot"></i> Generate Cover Letter';
             });
-            
-            return `
-${data.fullName}
-${data.location} | ${data.phone} | ${data.email}
-${data.linkedin ? data.linkedin + ' | ' : ''}${today}
-
-${data.hiringManager}
-${data.companyName}
-
-Dear ${data.hiringManager},
-
-I am writing to express my enthusiastic interest in the ${data.jobTitle} position at ${data.companyName}, which I discovered through your company's career page. With my background in ${data.jobSkills || 'relevant field'} and my passion for ${data.interest ? data.interest.toLowerCase() : 'innovative solutions'}, I am confident that I possess the skills and experience necessary to excel in this role.
-
-${data.strengths || 'I have developed a strong skill set through my professional experiences that aligns well with your requirements.'} I am particularly drawn to this opportunity because ${data.interest || 'of your company reputation for innovation and excellence'}.
-
-I have been following ${data.companyName}'s progress in the industry, and I'm impressed by your innovative approach and market leadership. The chance to contribute to your team while developing my skills in ${data.jobSkills ? data.jobSkills.split(',')[0] : 'this field'} is an exciting prospect.
-
-I would welcome the opportunity to discuss how my experience and skills can benefit ${data.companyName}. Thank you for considering my application. I have attached my resume for your review and look forward to the possibility of interviewing with you.
-
-Sincerely,
-${data.fullName}
-`;
-        }
+        });
 
         // Clear Button Click Handler
         clearBtn.addEventListener('click', function () {
@@ -864,15 +811,16 @@ ${data.fullName}
 
             // Scroll to the preview
             coverLetterPreview.scrollIntoView({ behavior: 'smooth' });
-        }  
+        }
 
         function downloadAsPDF(content, fullName) {
+            // Use jsPDF to create a PDF document
             const { jsPDF } = window.jspdf;
-            
+           
             // Create a new PDF instance
             const doc = new jsPDF();
             
-            // Get current theme
+             // Get current theme
             const isDarkMode = document.body.getAttribute('data-theme') === 'dark';
             
             // Set colors based on theme
@@ -887,19 +835,21 @@ ${data.fullName}
             // Set text color
             doc.setTextColor(textColor);
             
+            
             // Set font
             doc.setFont("helvetica");
-            doc.setFontSize(12);
+             doc.setFontSize(12);
+        
             
             // Add content with proper formatting
             const margin = 20;
             let yPosition = margin;
             const lineHeight = 7;
             const pageHeight = doc.internal.pageSize.getHeight();
-            
+
             // Split content into lines
             const lines = doc.splitTextToSize(content, doc.internal.pageSize.getWidth() - 2 * margin);
-            
+
             // Add each line to the PDF
             for (let i = 0; i < lines.length; i++) {
                 if (yPosition > pageHeight - margin) {
@@ -913,8 +863,7 @@ ${data.fullName}
                 doc.text(lines[i], margin, yPosition);
                 yPosition += lineHeight;
             }
-            
-            // Save the PDF
+             // Save the PDF
             doc.save(`Cover_Letter_${fullName.replace(/\s+/g, '_')}.pdf`);
             
             showToast('Cover letter downloaded as PDF');
@@ -949,8 +898,6 @@ ${data.fullName}
 
         if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
             setLightTheme();
-        } else {
-            setDarkTheme();
         }
 
         themeToggle.addEventListener('click', () => {
@@ -961,7 +908,7 @@ ${data.fullName}
             }
         });
 
-        function setDarkTheme() {
+       function setDarkTheme() {
             body.setAttribute('data-theme', 'dark');
             isDark = true;
             themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
