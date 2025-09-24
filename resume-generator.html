@@ -1,0 +1,543 @@
+[file name]: resume-generator.html
+[file content begin]
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Generator - ResumeGenAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables for Theme - Must match landing page */
+        :root {
+            /* Light Theme Variables */
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --background: #f5f5f5;
+            --background-dark: #e0e0e0;
+            --card-bg: #ffffff;
+            --card-hover: #f5f5f5;
+            --text: #333333;
+            --text-light: #666666;
+            --text-lighter: #888888;
+            --border: #dddddd;
+            --success: #4CAF50;
+            --error: #f44336;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --background: #121212;
+            --background-dark: #0a0a0a;
+            --card-bg: #1e1e1e;
+            --card-hover: #2a2a2a;
+            --text: #e0e0e0;
+            --text-light: #b0b0b0;
+            --text-lighter: #8d99ae;
+            --border: #333333;
+            --success: #4CAF50;
+            --error: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        /* Resume Generator Page Styles */
+        .resume-generator-container {
+            padding: 150px 0 100px;
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--background-dark) 100%);
+            transition: background 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .resume-generator-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .resume-generator-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .resume-generator-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .resume-generator-container.fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+
+        .resume-description-box {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 0 auto 30px;
+            border: 1px solid var(--border);
+            max-width: 800px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .resume-description-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .description-input-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .description-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background-color: var(--background-dark);
+            color: var(--text);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            resize: vertical;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .description-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .ai-generate-btn,
+        .clear-btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-generate-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .ai-generate-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--border);
+        }
+
+        .clear-btn:hover {
+            background-color: var(--border);
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 50px;
+            background-color: var(--success);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.error {
+            background-color: var(--error);
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* AI Generated Resume Preview */
+        .resume-preview {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px auto;
+            border: 1px solid var(--border);
+            max-width: 800px;
+            display: none;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .resume-preview h2 {
+            color: var(--text);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .resume-content {
+            background-color: var(--background-dark);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            transition: background-color 0.3s ease;
+        }
+
+        .resume-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Transition Animation */
+        .page-transition {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .resume-generator-title {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .resume-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .resume-generator-title {
+                font-size: 1.8rem;
+            }
+
+            .resume-description-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="/" class="logo" id="backBtn">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Home</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Resume Generator Page -->
+    <section class="resume-generator-container">
+        <div class="container page-transition">
+            <div class="resume-generator-header">
+                <h1 class="resume-generator-title">AI Resume Description Input</h1>
+                <p class="resume-generator-subtitle">Enter a detailed description about yourself to generate your
+                    professional resume</p>
+            </div>
+
+            <div class="resume-description-box">
+                <label for="descriptionInput" class="description-input-label">Your Professional Background:</label>
+                <textarea id="descriptionInput" class="description-textarea"
+                    placeholder="Example: I am Sneha Verma , a Java Developer with 5 years of experience in building scalable backend applications
+                     using Spring Boot and Microservices. I have expertise in MySQL, PostgreSQL, and MongoDB. I am proficient in AWS and Docker for cloud deployments...">I am Sneha Verma , a Java Developer with 5 years of experience in building scalable backend applications using Spring Boot and Microservices. I have expertise in MySQL, PostgreSQL, and MongoDB. I hold a Bachelor's degree in Computer Science. I have built an Expense Management System using Spring Boot and React, smart parking solutions, flash reporting and analytics, shared cache, and resume parsing tools.</textarea>
+
+                <div class="action-buttons">
+                    <button class="ai-generate-btn" id="generateBtn">
+                        <i class="fas fa-robot"></i> Generate Resume
+                    </button>
+                    <button class="clear-btn" id="clearBtn">
+                        <i class="fas fa-trash-alt"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Generated Resume Preview -->
+            <div class="resume-preview" id="resumePreview">
+                <!-- Content will be filled by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        // DOM Elements
+        const generateBtn = document.getElementById('generateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const descriptionInput = document.getElementById('descriptionInput');
+        const resumePreview = document.getElementById('resumePreview');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        // Initialize theme from localStorage (same as landing page)
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // Initialize theme on page load
+        initTheme();
+
+        // Show toast notification
+        function showToast(message, isError = false) {
+            toastMessage.textContent = message;
+            if (isError) {
+                toast.classList.add('error');
+            } else {
+                toast.classList.remove('error');
+            }
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Generate Button Click Handler 
+        generateBtn.addEventListener('click', async function () {
+            const description = descriptionInput.value.trim();
+
+            if (description === '') {
+                showToast('Please enter your professional description before generating.', true);
+                return;
+            }
+
+            try {
+                // Show loading state
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                generateBtn.disabled = true;
+
+                // Call the backend API
+                const response = await fetch('/generate-resume', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ description: description })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
+
+                const resumeData = await response.json();
+
+                if (resumeData.error) {
+                    throw new Error(resumeData.error);
+                }
+
+                showToast('AI Resume generated successfully!');
+
+                // Build query string with resume data
+                const queryString = new URLSearchParams();
+                for (const key in resumeData) {
+                    if (Array.isArray(resumeData[key])) {
+                        queryString.append(key, JSON.stringify(resumeData[key]));
+                    } else {
+                        queryString.append(key, resumeData[key]);
+                    }
+                }
+
+                // Also pass the current theme to the next page
+                const currentTheme = document.body.getAttribute('data-theme') || 'light';
+                queryString.append('theme', currentTheme);
+
+                // Redirect to resume form with data
+                window.location.href = `/resume-form?${queryString.toString()}`;
+
+            } catch (error) {
+                console.error('Error generating resume:', error);
+                showToast('Failed to generate AI Resume. Please try again.', true);
+
+                // Reset button state
+                generateBtn.innerHTML = '<i class="fas fa-robot"></i> Generate Resume';
+                generateBtn.disabled = false;
+            }
+        });
+
+        // Clear Button Click Handler
+        clearBtn.addEventListener('click', function () {
+            if (confirm('Are you sure you want to clear your description?')) {
+                descriptionInput.value = '';
+                descriptionInput.focus();
+                resumePreview.style.display = 'none';
+                showToast('Form cleared');
+            }
+        });
+
+        // Back button functionality
+        document.getElementById('backBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            window.location.href = '/';
+        });
+    </script>
+</body>
+
+</html>
