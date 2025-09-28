@@ -161,14 +161,17 @@
         #resumePreview header h1 {
           margin: 0;
           font-size: 2.5em;
-          color: var(--text);
           border-bottom: none;
+          color: var(--primary);
+
         }
 
         #resumePreview header h2 {
           margin: 0;
           font-size: 1.2em;
           color: var(--accent);
+          text-align: center;
+          
         }
 
         #resumePreview .contact {
@@ -181,6 +184,29 @@
           color: var(--text-light);
         }
 
+        #resumePreview .links {
+          margin-top: 10px;
+          font-size: 0.95em;
+          display: flex;
+         justify-content: first baseline; 
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+
+        #resumePreview .links a {
+          color: var(--primary);
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          max-width: 300px;
+          word-break: break-all;
+        }
+
+        #resumePreview .links a:hover {
+          text-decoration: underline;
+        }
+
         #resumePreview section {
           margin-bottom: 30px;
         }
@@ -191,6 +217,7 @@
           border-bottom: 2px solid var(--accent);
           padding-bottom: 8px;
           margin-bottom: 15px;
+          text-align: left;
         }
 
         #resumePreview .item {
@@ -224,6 +251,9 @@
           color: var(--primary);
           text-decoration: none;
           font-size: 0.9em;
+          display: flex;
+          align-items: center;
+          gap: 5px;
         }
 
         #resumePreview .view-link:hover {
@@ -338,7 +368,7 @@
     </style>
   
   <div class="container">
-    <h1><i class="fas fa-robot"></i> Resume Form</h1>
+    <h1><i class="fas fa-robot"></i>AI Resume Form</h1>
 
     <form id="resumeForm">
       <div class="row">
@@ -382,6 +412,20 @@
       <div class="form-group">
         <label>Summary</label>
         <textarea rows="3" id="summary" placeholder="Brief professional summary..." required></textarea>
+      </div>
+
+      <div class="section-container">
+        <h3>Work Experience</h3>
+        <div id="experience-section">
+          <button type="button" onclick="addExperience()"><i class="fas fa-plus"></i> Add Experience</button>
+        </div>
+      </div>
+
+      <div class="section-container">
+        <h3>Education</h3>
+        <div id="education-section">
+          <button type="button" onclick="addEducation()"><i class="fas fa-plus"></i> Add Education</button>
+        </div>
       </div>
 
       <div class="section-container">
@@ -561,6 +605,42 @@
           lastInterestItem.querySelector('.interest-name').value = interest;
         });
       }
+
+      // Education
+      if (resumeData.education && Array.isArray(resumeData.education)) {
+        // Clear any existing education inputs
+        const educationInputs = document.querySelectorAll('#education-section .education-item');
+        educationInputs.forEach(input => input.remove());
+        
+        // Add education from resume data
+        resumeData.education.forEach(edu => {
+          addEducation();
+          const educationItems = document.querySelectorAll('#education-section .education-item');
+          const lastEducationItem = educationItems[educationItems.length - 1];
+          lastEducationItem.querySelector('.education-degree').value = edu.degree || '';
+          lastEducationItem.querySelector('.education-school').value = edu.school || '';
+          lastEducationItem.querySelector('.education-duration').value = edu.duration || '';
+          lastEducationItem.querySelector('.education-desc').value = edu.description || '';
+        });
+      }
+
+      // Experience
+      if (resumeData.experience && Array.isArray(resumeData.experience)) {
+        // Clear any existing experience inputs
+        const experienceInputs = document.querySelectorAll('#experience-section .experience-item');
+        experienceInputs.forEach(input => input.remove());
+        
+        // Add experience from resume data
+        resumeData.experience.forEach(exp => {
+          addExperience();
+          const experienceItems = document.querySelectorAll('#experience-section .experience-item');
+          const lastExperienceItem = experienceItems[experienceItems.length - 1];
+          lastExperienceItem.querySelector('.experience-title').value = exp.title || '';
+          lastExperienceItem.querySelector('.experience-company').value = exp.company || '';
+          lastExperienceItem.querySelector('.experience-duration').value = exp.duration || '';
+          lastExperienceItem.querySelector('.experience-desc').value = exp.description || '';
+        });
+      }
     }
     
     // Parse URL and populate form when page loads
@@ -588,6 +668,64 @@
         <button type="button" class="remove-btn" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i> Remove</button>
       `;
       // Insert before the "Add Skill" button
+      section.insertBefore(div, section.lastElementChild);
+    }
+
+    function addExperience() {
+      const section = document.getElementById('experience-section');
+      const div = document.createElement('div');
+      div.className = 'experience-item';
+      div.innerHTML = `
+        <div class="form-group">
+          <label>Job Title</label>
+          <input type="text" placeholder="e.g., Software Engineer" class="experience-title" />
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" placeholder="Company Name" class="experience-company" />
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            <input type="text" placeholder="e.g., Jan 2023 - Present" class="experience-duration" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea rows="3" placeholder="Describe your responsibilities and achievements..." class="experience-desc"></textarea>
+        </div>
+        <button type="button" class="remove-btn" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i> Remove Experience</button>
+      `;
+      // Insert before the "Add Experience" button
+      section.insertBefore(div, section.lastElementChild);
+    }
+
+    function addEducation() {
+      const section = document.getElementById('education-section');
+      const div = document.createElement('div');
+      div.className = 'education-item';
+      div.innerHTML = `
+        <div class="form-group">
+          <label>Degree</label>
+          <input type="text" placeholder="e.g., Bachelor of Science in Computer Science" class="education-degree" />
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label>School/University</label>
+            <input type="text" placeholder="University Name" class="education-school" />
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            <input type="text" placeholder="e.g., Sep 2019 - May 2023" class="education-duration" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea rows="2" placeholder="Relevant coursework, thesis, achievements..." class="education-desc"></textarea>
+        </div>
+        <button type="button" class="remove-btn" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i> Remove Education</button>
+      `;
+      // Insert before the "Add Education" button
       section.insertBefore(div, section.lastElementChild);
     }
 
@@ -724,33 +862,131 @@
         }
       });
 
+      // Get education
+      const educationItems = document.querySelectorAll('.education-item');
+      const education = [];
+      educationItems.forEach(item => {
+        const degree = item.querySelector('.education-degree').value;
+        const school = item.querySelector('.education-school').value;
+        const duration = item.querySelector('.education-duration').value;
+        const desc = item.querySelector('.education-desc').value;
+        
+        if (degree.trim() !== '') {
+          education.push({
+            degree,
+            school,
+            duration,
+            desc
+          });
+        }
+      });
+
+      // Get experience
+      const experienceItems = document.querySelectorAll('.experience-item');
+      const experience = [];
+      experienceItems.forEach(item => {
+        const title = item.querySelector('.experience-title').value;
+        const company = item.querySelector('.experience-company').value;
+        const duration = item.querySelector('.experience-duration').value;
+        const desc = item.querySelector('.experience-desc').value;
+        
+        if (title.trim() !== '') {
+          experience.push({
+            title,
+            company,
+            duration,
+            desc
+          });
+        }
+      });
+
       // Generate resume HTML
       let resumeHTML = `
         <div class="resume-container" id="resumeContent">
           <header>
             <h1>${fullName}</h1>
-            <h2>Software Engineer</h2>
             <div class="contact">
-              <span>📧 ${email}</span>
-              <span>📞 ${phone}</span>
-              <span>📍 ${location}</span>
+              <span><i class="fas fa-envelope"></i> ${email}</span>
+              <span><i class="fas fa-phone"></i> ${phone}</span>
+              <span><i class="fas fa-map-marker-alt"></i> ${location}</span>
             </div>
-          </header>
+      `;
 
+      // Add links section with icons and full URLs
+      let linksHTML = '';
+      if (linkedin || github || portfolio) {
+        linksHTML = '<div class="links">';
+        
+        if (linkedin) {
+          linksHTML += `<a href="${linkedin}" target="_blank"><i class="fab fa-linkedin"></i> ${linkedin}</a>`;
+        }
+        
+        if (github) {
+          linksHTML += `<a href="${github}" target="_blank"><i class="fab fa-github"></i> ${github}</a>`;
+        }
+        
+        if (portfolio) {
+          linksHTML += `<a href="${portfolio}" target="_blank"><i class="fas fa-globe"></i> ${portfolio}</a>`;
+        }
+        
+        linksHTML += '</div>';
+      }
+      
+      resumeHTML += linksHTML + '</header>';
+
+      // Add summary section
+      resumeHTML += `
           <section>
             <h3>Summary</h3>
             <p>${summary}</p>
           </section>
-
-          <section>
-            <h3>Links</h3>
-            <div class="item">
-              ${linkedin ? `<p><strong>LinkedIn:</strong> <a href="${linkedin}" target="_blank">${linkedin}</a></p>` : ''}
-              ${github ? `<p><strong>GitHub:</strong> <a href="${github}" target="_blank">${github}</a></p>` : ''}
-              ${portfolio ? `<p><strong>Portfolio:</strong> <a href="${portfolio}" target="_blank">${portfolio}</a></p>` : ''}
-            </div>
-          </section>
       `;
+
+      // Add work experience section
+      if (experience.length > 0) {
+        resumeHTML += `
+          <section>
+            <h3>Work Experience</h3>
+        `;
+        
+        experience.forEach(exp => {
+          resumeHTML += `
+            <div class="item">
+              <div class="title">
+                <strong>${exp.title}</strong>
+                ${exp.duration ? `<span>${exp.duration}</span>` : ''}
+              </div>
+              ${exp.company ? `<p class="org">${exp.company}</p>` : ''}
+              ${exp.desc ? `<p>${exp.desc}</p>` : ''}
+            </div>
+          `;
+        });
+        
+        resumeHTML += `</section>`;
+      }
+
+      // Add education section
+      if (education.length > 0) {
+        resumeHTML += `
+          <section>
+            <h3>Education</h3>
+        `;
+        
+        education.forEach(edu => {
+          resumeHTML += `
+            <div class="item">
+              <div class="title">
+                <strong>${edu.degree}</strong>
+                ${edu.duration ? `<span>${edu.duration}</span>` : ''}
+              </div>
+              ${edu.school ? `<p class="org">${edu.school}</p>` : ''}
+              ${edu.desc ? `<p>${edu.desc}</p>` : ''}
+            </div>
+          `;
+        });
+        
+        resumeHTML += `</section>`;
+      }
 
       // Add projects section
       if (projects.length > 0) {
@@ -764,7 +1000,7 @@
             <div class="item">
               <div class="title">
                 <strong>${project.name}</strong>
-                ${project.link ? `<a href="${project.link}" class="view-link" target="_blank">🔗 View</a>` : ''}
+                ${project.link ? `<a href="${project.link}" class="view-link" target="_blank"><i class="fas fa-external-link-alt"></i> ${project.link}</a>` : ''}
               </div>
               ${project.tech ? `<p class="tags">${project.tech}</p>` : ''}
               ${project.desc ? `<p>${project.desc}</p>` : ''}
@@ -856,25 +1092,25 @@
       document.querySelector('.container').style.display = 'block';
       document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
     }
-    
-     function anotherGenerate() {
-      // Redirect to the index page with the resume generator visible
-      window.location.href = '/resume-generator?showGenerator=true';
-    }
 
-    // *** FINAL CORRECTED FUNCTION ***
+    function anotherGenerate() {
+      document.getElementById('resumePreview').style.display = 'none';
+      document.querySelector('.container').style.display = 'block';
+      document.getElementById('resumeForm').reset();
+      document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+    }
+    
     function downloadResume() {
         const contentElement = document.getElementById("resumeContent");
-        const previewContainer = document.getElementById("resumePreview"); // The element that has the background color
+        const previewContainer = document.getElementById("resumePreview");
         const { jsPDF } = window.jspdf;
 
-        // Get the actual computed background color from the container element.
-        // This ensures that whether the theme is light or dark, the correct color is used.
+        // Get the actual computed background color of the resume card
         const resumeBackgroundColor = getComputedStyle(previewContainer).backgroundColor;
 
         const options = {
             quality: 1.0,
-            backgroundColor: resumeBackgroundColor, // Apply this color to the image background
+            backgroundColor: resumeBackgroundColor, 
             pixelRatio: 2 
         };
 
@@ -889,10 +1125,9 @@
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
 
-                // Set the background color for the entire PDF page to match the resume's theme
+                // Set the color for the entire PDF canvas
                 pdf.setFillColor(resumeBackgroundColor);
-                // Draw a filled rectangle that covers the whole page
-                pdf.rect(0, 0, pageWidth, pageHeight, 'F'); 
+                pdf.rect(0, 0, pageWidth, pageHeight, 'F');
 
                 const margin = 10;
                 const contentWidth = pageWidth - (margin * 2);
@@ -900,6 +1135,7 @@
 
                 const img = new Image();
                 img.src = dataUrl;
+                
                 img.onload = function () {
                     const aspectRatio = this.width / this.height;
 
@@ -917,6 +1153,11 @@
                     pdf.addImage(dataUrl, "PNG", x, y, pdfImgWidth, pdfImgHeight);
                     pdf.save("resume.pdf");
                 };
+
+                // Ensure onload runs even if the image is cached
+                if (img.complete) {
+                    img.onload();
+                }
             })
             .catch((error) => {
                 console.error('Oops, something went wrong!', error);
