@@ -8,12 +8,9 @@ import json
 import re
 
 app = Flask(__name__)
-
-
 CORS(app)  # Enable CORS for all routes
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 
 def generate_resume_from_description(description):
     """
@@ -29,6 +26,8 @@ def generate_resume_from_description(description):
     - github (optional)
     - portfolio (optional)
     - summary (professional summary)
+    - experience (array of objects with title, company, duration, and description)
+    - education (array of objects with degree, school, duration, and description)
     - skills (array of objects with name and level)
     - projects (array of objects with name, description, technologies, and link if available)
     - languages (array of objects with name and proficiency)
@@ -37,6 +36,7 @@ def generate_resume_from_description(description):
     Here's the description:
     {description}
     
+    For experience and education, include realistic durations and detailed descriptions.
     Return ONLY the JSON object, no additional text or explanation.
     """
     
@@ -77,6 +77,8 @@ def extract_resume_data_fallback(description):
         "phone": "+1234567890",
         "location": "San Francisco, CA",
         "summary": description[:200] + "..." if len(description) > 200 else description,
+        "experience": [],
+        "education": [],
         "skills": [],
         "projects": [],
         "languages": [{"name": "English", "proficiency": "Fluent"}],
@@ -139,11 +141,61 @@ def extract_resume_data_fallback(description):
         if skill.lower() in description.lower():
             data["skills"].append({"name": skill, "level": "Proficient"})
     
-    # Extract experience
-    exp_match = re.search(r"(\d+)\s+years?\s+of\s+experience", description, re.IGNORECASE)
-    if exp_match:
-        years = exp_match.group(1)
-        data["summary"] = f"Professional with {years} years of experience. " + data["summary"]
+    # Extract experience information
+    exp_years_match = re.search(r"(\d+)\s+years?\s+of\s+experience", description, re.IGNORECASE)
+    years = exp_years_match.group(1) if exp_years_match else "3"
+    
+    # Generate experience based on description
+    if any(word in description.lower() for word in ["software", "developer", "engineer", "programming"]):
+        data["experience"].append({
+            "title": "Software Engineer",
+            "company": "Tech Solutions Inc.",
+            "duration": f"Jan 202{int(years)-1} - Present",
+            "description": "Developed and maintained software applications using modern technologies. Collaborated with cross-functional teams to deliver high-quality products."
+        })
+    
+    if any(word in description.lower() for word in ["senior", "lead", "manager"]):
+        data["experience"].append({
+            "title": "Senior Developer",
+            "company": "Previous Company",
+            "duration": f"Mar 202{int(years)-3} - Dec 202{int(years)-1}",
+            "description": "Led development teams and mentored junior developers. Designed system architecture and implemented best practices."
+        })
+    
+    # Add default experience if none detected
+    if not data["experience"]:
+        data["experience"].append({
+            "title": "Professional Role",
+            "company": "Various Companies",
+            "duration": f"2019 - Present",
+            "description": "Gained valuable experience in relevant field. Developed key skills and contributed to various projects."
+        })
+    
+    # Extract education information
+    if any(word in description.lower() for word in ["master", "ms", "masters"]):
+        data["education"].append({
+            "degree": "Master of Science in Computer Science",
+            "school": "University of Technology",
+            "duration": "Sep 2019 - May 2021",
+            "description": "Specialized in Advanced Computing. Thesis on innovative software solutions."
+        })
+    
+    if any(word in description.lower() for word in ["bachelor", "bs", "ba", "undergraduate"]):
+        data["education"].append({
+            "degree": "Bachelor of Science in Computer Science",
+            "school": "State University",
+            "duration": "Aug 2015 - May 2019",
+            "description": "Focused on software development fundamentals. Relevant coursework in algorithms and data structures."
+        })
+    
+    # Add default education if none detected
+    if not data["education"]:
+        data["education"].append({
+            "degree": "Bachelor's Degree in Relevant Field",
+            "school": "University Name",
+            "duration": "2015 - 2019",
+            "description": "Completed comprehensive program with focus on practical applications."
+        })
     
     # Extract potential job titles
     title_match = re.search(r"(?:am|is|as|role:?)\s+(a\s+|an\s+)?([A-Za-z\s]+)(?:developer|engineer|specialist|analyst|manager)", description, re.IGNORECASE)
@@ -254,7 +306,6 @@ Sincerely,
     
     return cover_letter
 
-
 @app.route('/generate-resume', methods=['POST'])
 def generate_resume():
     try:
@@ -292,7 +343,6 @@ def generate_cover_letter_route():
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
-
 
 # Serve the resume generator page
 @app.route('/resume-generator')
