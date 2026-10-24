@@ -83,8 +83,8 @@ User can export the resume as PDF
 
 1. Clone the repository
 
-git clone https://github.com/your-username/your-repository-name.git
-cd your-repository-name
+git clone https://github.com/SnehaVerm/AI-resume-and-cover-letter-generator.git
+cd AI-resume-and-cover-letter-generator
 
 2. Create a virtual environment
 
