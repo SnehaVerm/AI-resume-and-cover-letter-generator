@@ -122,11 +122,7 @@ def extract_resume_data_fallback(description):
         if not data["github"].startswith("http"):
             data["github"] = "https://" + data["github"]
 
-    return data
-    # Extract portfolio URL
-   
-    
-    return data
+    return data   
 
 def generate_cover_letter(data):
     """
