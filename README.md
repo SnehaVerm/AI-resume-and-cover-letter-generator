@@ -52,9 +52,11 @@ python-dotenv
 
 AI-resume-and-cover-letter-generator/
 ├── README.md
+├── LICENSE
 ├── .gitignore
 ├── requirements.txt
 ├── app.py
+├── coverletter.html
 ├── index.html
 ├── resume-form.html
 └── resume-generator.html
