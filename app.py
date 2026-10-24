@@ -36,7 +36,7 @@ def generate_resume_from_description(description):
     Here's the description:
     {description}
     
-    For experience and education, include realistic durations and detailed descriptions.
+   Use only information explicitly provided by the user. Never invent experience, education, dates, companies, skills, or achievements. If information is missing, use empty strings or empty arrays instead of making it up.
     Return ONLY the JSON object, no additional text or explanation.
     """
     
@@ -57,14 +57,13 @@ def generate_resume_from_description(description):
         if json_match:
             resume_data = json.loads(json_match.group())
         else:
-            # If no JSON found, use fallback
-            resume_data = extract_resume_data_fallback(description)
+          else:
+              raise ValueError("AI did not return valid resume JSON.")
             
         return resume_data
     except Exception as e:
-        print(f"Error generating resume: {str(e)}")
-        # Fallback to simple parsing if OpenAI fails
-        return extract_resume_data_fallback(description)
+    print(f"Error generating resume: {str(e)}")
+    raise ValueError("Unable to generate resume. Please try again.")
 
 def extract_resume_data_fallback(description):
     """
