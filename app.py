@@ -66,54 +66,63 @@ def generate_resume_from_description(description):
         # Fallback to simple parsing if OpenAI fails
         return extract_resume_data_fallback(description)
 
-def extract_resume_data_fallback(description):
+   def extract_resume_data_fallback(description):
     """
-    Fallback method to extract resume data if OpenAI API fails
+    Extract only information available in the user's description.
+    Do not generate fictional personal or professional details.
     """
-    # Simple parsing to extract information from the description
     data = {
-        "fullName": "John Doe",
-        "email": "john.doe@example.com",
-        "phone": "+1234567890",
-        "location": "San Francisco, CA",
+        "fullName": "",
+        "email": "",
+        "phone": "",
+        "location": "",
         "summary": description[:200] + "..." if len(description) > 200 else description,
         "experience": [],
         "education": [],
         "skills": [],
         "projects": [],
-        "languages": [{"name": "English", "proficiency": "Fluent"}],
-        "interests": ["Technology", "Software Development", "Learning"]
+        "languages": [],
+        "interests": []
     }
-    
-    # Extract name
-    name_match = re.search(r'(?:my name is|I am|name|i am:)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)', description, re.IGNORECASE)
+
+    name_match = re.search(
+        r'(?:my name is|I am|name|i am:)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)',
+        description,
+        re.IGNORECASE
+    )
     if name_match:
         data["fullName"] = name_match.group(1)
-    
-    # Extract phone number
-    phone_match = re.search(r'(\+?\d{1,3}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,4})', description)
+
+    email_match = re.search(
+        r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b',
+        description
+    )
+    if email_match:
+        data["email"] = email_match.group(0)
+
+    phone_match = re.search(r'\+?[\d\s().-]{10,}', description)
     if phone_match:
-        data["phone"] = phone_match.group(1)
-    
-    # Extract location
-    location_match = re.search(r'(?:from|based in|located in|location:)\s+([A-Za-z\s]+(?:,\s*[A-Za-z\s]*)*)', description, re.IGNORECASE)
-    if location_match:
-        data["location"] = location_match.group(1).strip()
-    
-    # Extract LinkedIn URL
-    linkedin_match = re.search(r'(https?://)?(www\.)?linkedin\.com/(in|company)/[a-zA-Z0-9-]+', description)
+        data["phone"] = phone_match.group(0).strip()
+
+    linkedin_match = re.search(
+        r'(https?://)?(www\.)?linkedin\.com/in/[a-zA-Z0-9-]+',
+        description
+    )
     if linkedin_match:
         data["linkedin"] = linkedin_match.group(0)
-        if not data["linkedin"].startswith('http'):
-            data["linkedin"] = 'https://' + data["linkedin"]
-    
-    # Extract GitHub URL
-    github_match = re.search(r'(https?://)?(www\.)?github\.com/[a-zA-Z0-9-]+', description)
+        if not data["linkedin"].startswith("http"):
+            data["linkedin"] = "https://" + data["linkedin"]
+
+    github_match = re.search(
+        r'(https?://)?(www\.)?github\.com/[a-zA-Z0-9-]+',
+        description
+    )
     if github_match:
         data["github"] = github_match.group(0)
-        if not data["github"].startswith('http'):
-            data["github"] = 'https://' + data["github"]
-    
+        if not data["github"].startswith("http"):
+            data["github"] = "https://" + data["github"]
+
+    return data
     # Extract portfolio URL
     portfolio_match = re.search(r'\b(?:portfolio|website):?\s*(https?://[^\s]+)', description, re.IGNORECASE)
     if not portfolio_match:
