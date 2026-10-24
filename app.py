@@ -55,11 +55,11 @@ def generate_resume_from_description(description):
         # Clean the response to extract only JSON
         json_match = re.search(r'\{.*\}', content, re.DOTALL)
    if json_match:
-        resume_data = json.loads(json_match.group())
+       resume_data = json.loads(json_match.group())
    else:
        raise ValueError("AI did not return valid resume JSON.")
             
-        return resume_data
+       return resume_data
     except Exception as e:
         print(f"Error generating resume: {str(e)}")
         raise ValueError("Unable to generate resume. Please try again.")
