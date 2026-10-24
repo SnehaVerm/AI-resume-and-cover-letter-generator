@@ -66,7 +66,7 @@ def generate_resume_from_description(description):
         # Fallback to simple parsing if OpenAI fails
         return extract_resume_data_fallback(description)
 
-   def extract_resume_data_fallback(description):
+def extract_resume_data_fallback(description):
     """
     Extract only information available in the user's description.
     Do not generate fictional personal or professional details.
