@@ -59,9 +59,8 @@ AI-resume-and-cover-letter-generator/
 ├── coverletter.html
 ├── index.html
 ├── resume-form.html
-└── resume-generator.html
+└── resume-generator.htm
 
-File and folder names may be different in your repository. Update the structure above if your actual project uses different names.
 
 ⚙️ How It Works
 
