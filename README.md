@@ -56,7 +56,7 @@ AI-resume-and-cover-letter-generator/
 ├── requirements.txt
 ├── app.py
 ├── index.html
-├── resume-from.html
+├── resume-form.html
 ├── style.css
 └── script.js
 
