@@ -61,7 +61,6 @@ def generate_resume_from_description(description):
 
         return resume_data
             
-       return resume_data
     except Exception as e:
         print(f"Error generating resume: {str(e)}")
         raise ValueError("Unable to generate resume. Please try again.")
