@@ -50,20 +50,15 @@ python-dotenv
 
 📁 Project Structure
 
-ResumeAI-Generator/
-│
-├── Flask_App/
-│   ├── app.py
-│   ├── .env
-│   └── requirements.txt
-│
-├── Frontend/
-│   ├── resume-generator.html
-│   ├── style.css
-│   └── script.js
-│
+AI-resume-and-cover-letter-generator/
 ├── README.md
-└── .gitignore
+├── .gitignore
+├── requirements.txt
+├── app.py
+├── index.html
+├── resume-from.html
+├── style.css
+└── script.js
 
 File and folder names may be different in your repository. Update the structure above if your actual project uses different names.
 
