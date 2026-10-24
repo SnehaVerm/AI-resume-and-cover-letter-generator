@@ -57,8 +57,7 @@ AI-resume-and-cover-letter-generator/
 ├── app.py
 ├── index.html
 ├── resume-form.html
-├── style.css
-└── script.js
+└── resume-generator.html
 
 File and folder names may be different in your repository. Update the structure above if your actual project uses different names.
 
@@ -103,10 +102,6 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
-If requirements.txt is inside Flask_App, run:
-
-cd Flask_App
-pip install -r requirements.txt
 
 4. Configure the OpenAI API key
 
@@ -255,4 +250,4 @@ Open a Pull Request.
 
 📜 License
 
-This project is available for educational and personal use. Add a specific open-source license such as MIT if you intend to distribute the project under an open-source license.
+This project is licensed under the MIT License. See the LICENSE file for details.
